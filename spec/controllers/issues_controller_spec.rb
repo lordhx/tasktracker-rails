@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe IssuesController, type: :controller do
-  describe "GET #index" do
+  describe 'GET #index' do
     subject { get :index }
 
     context 'when regular user', user: :regular do
@@ -21,6 +21,18 @@ RSpec.describe IssuesController, type: :controller do
         expect(json_body).to have(0).items
       end
     end
+
+    context 'when user is a manager', user: :manager do
+      it 'returns a success' do
+        is_expected.to be_success
+      end
+
+      it 'returns all issues' do
+        create(:issue)
+        is_expected.to be_success
+        expect(json_body).to have(1).item
+      end
+    end
   end
 
   # describe "GET #show" do
@@ -31,25 +43,27 @@ RSpec.describe IssuesController, type: :controller do
   #   end
   # end
 
-  # describe "POST #create" do
-  #   context "with valid params" do
-  #     it "creates a new Issue" do
+  # describe 'POST #create' do
+  #   subject { post :create, params: { issue: issue } }
+  #
+  #   context 'with valid params' do
+  #     it 'creates a new Issue' do
   #       expect {
   #         post :create, params: {issue: valid_attributes}, session: valid_session
   #       }.to change(Issue, :count).by(1)
   #     end
   #
-  #     it "renders a JSON response with the new issue" do
+  #     it 'renders a JSON response with the new issue' do
   #
-  #       post :create, params: {issue: valid_attributes}, session: valid_session
+  #
   #       expect(response).to have_http_status(:created)
   #       expect(response.content_type).to eq('application/json')
   #       expect(response.location).to eq(issue_url(Issue.last))
   #     end
   #   end
   #
-  #   context "with invalid params" do
-  #     it "renders a JSON response with errors for the new issue" do
+  #   context 'with invalid params' do
+  #     it 'renders a JSON response with errors for the new issue' do
   #
   #       post :create, params: {issue: invalid_attributes}, session: valid_session
   #       expect(response).to have_http_status(:unprocessable_entity)
