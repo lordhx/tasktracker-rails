@@ -47,17 +47,8 @@ RSpec.describe IssuesController, type: :controller do
     end
   end
 
-  # describe "GET #show" do
-  #   it "returns a success response" do
-  #     issue = Issue.create! valid_attributes
-  #     get :show, params: {id: issue.to_param}, session: valid_session
-  #     expect(response).to be_success
-  #   end
-  # end
-
   describe 'POST #create' do
     subject { post :create, params: { issue: issue_attributes } }
-
     let(:issue_attributes) { attributes_for(:issue) }
 
     context 'when regular user', user: :regular do
@@ -87,20 +78,16 @@ RSpec.describe IssuesController, type: :controller do
     end
   end
 
-  # describe "PUT #update" do
-  #   context "with valid params" do
-  #     let(:new_attributes) {
-  #       skip("Add a hash of attributes valid for your model")
-  #     }
-  #
-  #     it "updates the requested issue" do
+  # describe 'PUT #update' do
+  #   context 'with valid params' do
+  #     it 'updates the requested issue' do
   #       issue = Issue.create! valid_attributes
   #       put :update, params: {id: issue.to_param, issue: new_attributes}, session: valid_session
   #       issue.reload
-  #       skip("Add assertions for updated state")
+  #       skip('Add assertions for updated state')
   #     end
   #
-  #     it "renders a JSON response with the issue" do
+  #     it 'renders a JSON response with the issue' do
   #       issue = Issue.create! valid_attributes
   #
   #       put :update, params: {id: issue.to_param, issue: valid_attributes}, session: valid_session
@@ -109,8 +96,8 @@ RSpec.describe IssuesController, type: :controller do
   #     end
   #   end
   #
-  #   context "with invalid params" do
-  #     it "renders a JSON response with errors for the issue" do
+  #   context 'with invalid params' do
+  #     it 'renders a JSON response with errors for the issue' do
   #       issue = Issue.create! valid_attributes
   #
   #       put :update, params: {id: issue.to_param, issue: invalid_attributes}, session: valid_session
@@ -119,13 +106,34 @@ RSpec.describe IssuesController, type: :controller do
   #     end
   #   end
   # end
-  #
-  # describe "DELETE #destroy" do
-  #   it "destroys the requested issue" do
-  #     issue = Issue.create! valid_attributes
-  #     expect {
-  #       delete :destroy, params: {id: issue.to_param}, session: valid_session
-  #     }.to change(Issue, :count).by(-1)
-  #   end
-  # end
+
+  describe 'DELETE #destroy' do
+    subject { delete :destroy, params: { id: issue.id } }
+    let!(:issue) { create(:issue, author: author) }
+    let(:author) { user }
+
+    context 'when regular user', user: :regular do
+      it 'returns success' do
+        is_expected.to be_success
+      end
+
+      it 'deletes an issue' do
+        expect { subject }.to change(Issue, :count).by(-1)
+      end
+
+      context 'when author does not match current user' do
+        let(:author) { create(:user) }
+
+        it 'returns not_found' do
+          is_expected.to be_not_found
+        end
+      end
+    end
+
+    context 'when user is a manager', user: :manager do
+      it 'returns forbidden' do
+        is_expected.to be_forbidden
+      end
+    end
+  end
 end

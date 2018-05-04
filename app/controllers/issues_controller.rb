@@ -6,11 +6,6 @@ class IssuesController < ApplicationController
     render json: issues.order(created_at: :desc)
   end
 
-  # GET /issues/1
-  def show
-    render json: issue
-  end
-
   # POST /issues
   def create
     @issue = issues.new(issue_params.merge(author_id: current_user.id))
