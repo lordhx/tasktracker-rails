@@ -8,7 +8,8 @@ class Ability
 
     if user.manager?
       can :read, Issue
-      can :assign, Issue
+      can :assignment, Issue, assignee_id: user.id
+      can :assignment, Issue, assignee_id: nil
     elsif user.regular?
       can :crud, Issue, author_id: user.id
     end
