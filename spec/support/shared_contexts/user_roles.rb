@@ -1,5 +1,5 @@
 module UserRoles
-  User.role_enums.each do |key,  _|
+  User.roles.each do |key,  _|
     role = key.to_sym
     context_name = "user is #{role}"
 

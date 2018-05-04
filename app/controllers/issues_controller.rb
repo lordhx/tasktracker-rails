@@ -37,7 +37,9 @@ class IssuesController < ApplicationController
   private
 
   def issues
-    @issues ||= Issue.all
+    # TODO: extract into query object or use cancancan
+    # TODO: don't like rails enums
+    @issues ||= current_user.manager? ? Issue.all : Issue.where(author: current_user)
   end
 
   def issue

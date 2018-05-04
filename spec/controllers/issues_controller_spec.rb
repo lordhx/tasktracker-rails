@@ -31,32 +31,32 @@ RSpec.describe IssuesController, type: :controller do
   #   end
   # end
 
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new Issue" do
-        expect {
-          post :create, params: {issue: valid_attributes}, session: valid_session
-        }.to change(Issue, :count).by(1)
-      end
-
-      it "renders a JSON response with the new issue" do
-
-        post :create, params: {issue: valid_attributes}, session: valid_session
-        expect(response).to have_http_status(:created)
-        expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(issue_url(Issue.last))
-      end
-    end
-
-    context "with invalid params" do
-      it "renders a JSON response with errors for the new issue" do
-
-        post :create, params: {issue: invalid_attributes}, session: valid_session
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
-      end
-    end
-  end
+  # describe "POST #create" do
+  #   context "with valid params" do
+  #     it "creates a new Issue" do
+  #       expect {
+  #         post :create, params: {issue: valid_attributes}, session: valid_session
+  #       }.to change(Issue, :count).by(1)
+  #     end
+  #
+  #     it "renders a JSON response with the new issue" do
+  #
+  #       post :create, params: {issue: valid_attributes}, session: valid_session
+  #       expect(response).to have_http_status(:created)
+  #       expect(response.content_type).to eq('application/json')
+  #       expect(response.location).to eq(issue_url(Issue.last))
+  #     end
+  #   end
+  #
+  #   context "with invalid params" do
+  #     it "renders a JSON response with errors for the new issue" do
+  #
+  #       post :create, params: {issue: invalid_attributes}, session: valid_session
+  #       expect(response).to have_http_status(:unprocessable_entity)
+  #       expect(response.content_type).to eq('application/json')
+  #     end
+  #   end
+  # end
 
   # describe "PUT #update" do
   #   context "with valid params" do
