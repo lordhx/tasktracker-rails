@@ -21,6 +21,7 @@ class Issue::AssignmentsController < ApplicationController
 
   # DELETE /issue/:issue_id/assignment
   def destroy
+    raise CanCan::AccessDenied unless issue.pending?
     issue.update(assignee: nil)
   end
 

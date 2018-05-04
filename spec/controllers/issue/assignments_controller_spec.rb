@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Issue::AssignmentsController, type: :controller do
-  let!(:issue) { create(:issue, assignee: assignee) }
+  let!(:issue) { create(:issue, assignee: assignee, status: status) }
+  let(:status) { :pending }
 
   describe 'POST #create' do
     subject { post :create, params: { issue_id: issue.id } }
@@ -81,6 +82,22 @@ RSpec.describe Issue::AssignmentsController, type: :controller do
 
       context 'when an issues is assigned to another manger' do
         let(:assignee) { create(:manager) }
+
+        it 'returns forbidden' do
+          is_expected.to be_forbidden
+        end
+      end
+
+      context 'when an issues is in_progress' do
+        let(:status) { :in_progress }
+
+        it 'returns forbidden' do
+          is_expected.to be_forbidden
+        end
+      end
+
+      context 'when an issues is resolved' do
+        let(:status) { :resolved }
 
         it 'returns forbidden' do
           is_expected.to be_forbidden
