@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180503163330) do
+ActiveRecord::Schema.define(version: 20180503164204) do
+
+  create_table "issues", force: :cascade do |t|
+    t.integer "status"
+    t.integer "author_id"
+    t.integer "assignee_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_issues_on_assignee_id"
+    t.index ["author_id"], name: "index_issues_on_author_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -25,7 +35,7 @@ ActiveRecord::Schema.define(version: 20180503163330) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "role"
+    t.integer "role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
