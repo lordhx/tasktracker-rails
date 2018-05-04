@@ -78,34 +78,40 @@ RSpec.describe IssuesController, type: :controller do
     end
   end
 
-  # describe 'PUT #update' do
-  #   context 'with valid params' do
-  #     it 'updates the requested issue' do
-  #       issue = Issue.create! valid_attributes
-  #       put :update, params: {id: issue.to_param, issue: new_attributes}, session: valid_session
-  #       issue.reload
-  #       skip('Add assertions for updated state')
-  #     end
-  #
-  #     it 'renders a JSON response with the issue' do
-  #       issue = Issue.create! valid_attributes
-  #
-  #       put :update, params: {id: issue.to_param, issue: valid_attributes}, session: valid_session
-  #       expect(response).to have_http_status(:ok)
-  #       expect(response.content_type).to eq('application/json')
-  #     end
-  #   end
-  #
-  #   context 'with invalid params' do
-  #     it 'renders a JSON response with errors for the issue' do
-  #       issue = Issue.create! valid_attributes
-  #
-  #       put :update, params: {id: issue.to_param, issue: invalid_attributes}, session: valid_session
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.content_type).to eq('application/json')
-  #     end
-  #   end
-  # end
+  describe 'PUT #update' do
+    subject { put :update, params: { id: issue.id, issue: issue_attributes } }
+    let(:issue_attributes) { attributes_for(:issue) }
+    let!(:issue) { create(:issue, author: author) }
+    let(:author) { user }
+
+    context 'when regular user', user: :regular do
+      it 'returns success' do
+        is_expected.to be_success
+      end
+
+      it 'does not create an issue' do
+        expect { subject }.to_not change(Issue, :count)
+      end
+
+      it 'updates an issue with new params' do
+        expect { subject }.to change { issue.reload.description }.to(issue_attributes[:description])
+      end
+
+      context 'when author does not match current user' do
+        let(:author) { create(:user) }
+
+        it 'returns not_found' do
+          is_expected.to be_not_found
+        end
+      end
+    end
+
+    context 'when user is a manager', user: :manager do
+      it 'returns success' do
+        is_expected.to be_forbidden
+      end
+    end
+  end
 
   describe 'DELETE #destroy' do
     subject { delete :destroy, params: { id: issue.id } }

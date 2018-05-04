@@ -1,9 +1,7 @@
 FactoryBot.define do
   factory :user do
-    sequence :email do |n|
-      "person#{n}@example.com"
-    end
-    password 'password'
+    email { Faker::Internet.email }
+    password { Faker::Internet.password }
 
     factory :regular_user do
       role :regular

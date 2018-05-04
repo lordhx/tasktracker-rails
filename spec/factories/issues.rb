@@ -4,6 +4,6 @@ FactoryBot.define do
     association :assignee, factory: :manager
 
     status Issue.statuses.keys.sample
-    description 'Lorem ipsum'
+    description { Faker::Lorem.sentence }
   end
 end

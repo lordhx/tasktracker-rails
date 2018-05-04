@@ -10,7 +10,7 @@ class IssuesController < ApplicationController
   def create
     @issue = issues.new(issue_params.merge(author_id: current_user.id))
 
-    if issue.save!
+    if issue.save
       render json: issue, status: :created, location: issue
     else
       render json: issue.errors, status: :unprocessable_entity
@@ -19,7 +19,7 @@ class IssuesController < ApplicationController
 
   # PATCH/PUT /issues/1
   def update
-    if issue.update(issue_params)
+    if issue.update!(issue_params)
       render json: issue
     else
       render json: issue.errors, status: :unprocessable_entity
