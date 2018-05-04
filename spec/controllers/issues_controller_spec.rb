@@ -80,9 +80,9 @@ RSpec.describe IssuesController, type: :controller do
       end
     end
 
-    context 'when regular user', user: :manager do
+    context 'when user is a manager', user: :manager do
       it 'returns success' do
-        is_expected.to be_unauthorized
+        is_expected.to be_forbidden
       end
     end
   end

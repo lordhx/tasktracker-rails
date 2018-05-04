@@ -1,4 +1,6 @@
 class IssuesController < ApplicationController
+  authorize_resource
+
   # GET /issues
   def index
     render json: issues.order(created_at: :desc)
@@ -37,9 +39,7 @@ class IssuesController < ApplicationController
   private
 
   def issues
-    # TODO: extract into query object or use cancancan
-    # TODO: don't like rails enums
-    @issues ||= current_user.manager? ? Issue.all : Issue.where(author: current_user)
+    @issues ||= Issue.accessible_by(current_ability)
   end
 
   def issue
