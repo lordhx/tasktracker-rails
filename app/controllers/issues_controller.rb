@@ -3,7 +3,13 @@ class IssuesController < ApplicationController
 
   # GET /issues
   def index
-    render json: issues.order(created_at: :desc)
+    # TODO: extract into Presenter to support metadata i.e. PAGE, MORE_RESULTS or use gem ransack
+
+    scope = issues
+    scope = scope.where(status: params[:status]) if params[:status].present?
+    scope = scope.offset(params[:offset]) if params[:offset].present?
+
+    render json: scope.order(created_at: :desc).limit(Issue::PER_PAGE)
   end
 
   # POST /issues

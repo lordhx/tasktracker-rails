@@ -44,6 +44,19 @@ RSpec.describe IssuesController, type: :controller do
         expect(json_body).to have(2).items
         expect(json_body.first[:id]).to eq(second.id)
       end
+
+      it 'returns 25 issues per page' do
+        (Issue::PER_PAGE + 2).times { create(:issue) }
+
+        subject
+        expect(json_body).to have(Issue::PER_PAGE).items
+        expect(json_body.first[:id]).to eq(Issue.last.id)
+
+        get :index, params: { offset: Issue::PER_PAGE }
+        result = json_body(true)
+        expect(result).to have(2).items
+        expect(result.last[:id]).to eq(Issue.first.id)
+      end
     end
   end
 
