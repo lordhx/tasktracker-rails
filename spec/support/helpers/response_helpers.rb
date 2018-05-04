@@ -1,6 +1,6 @@
 module ResponseHelpers
   def json_body
-    JSON.parse(response.body, symoblize_names: true)
+    @json_body ||= JSON.parse(response.body, symbolize_names: true)
   end
 end
 

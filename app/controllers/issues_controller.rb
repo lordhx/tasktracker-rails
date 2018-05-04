@@ -1,7 +1,7 @@
 class IssuesController < ApplicationController
   # GET /issues
   def index
-    render json: issues
+    render json: issues.order(created_at: :desc)
   end
 
   # GET /issues/1
@@ -11,9 +11,9 @@ class IssuesController < ApplicationController
 
   # POST /issues
   def create
-    @issue = issues.new(issue_params)
+    @issue = issues.new(issue_params.merge(author_id: current_user.id))
 
-    if issue.save
+    if issue.save!
       render json: issue, status: :created, location: issue
     else
       render json: issue.errors, status: :unprocessable_entity
@@ -46,8 +46,7 @@ class IssuesController < ApplicationController
     @issue ||= issues.find(params[:id])
   end
 
-  # Only allow a trusted parameter "white list" through.
   def issue_params
-    params.require(:issue).permit(:status, :author_id, :assignee_id)
+    params.require(:issue).permit(:description)
   end
 end
