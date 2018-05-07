@@ -57,6 +57,29 @@ RSpec.describe IssuesController, type: :controller do
         expect(result).to have(2).items
         expect(result.last[:id]).to eq(Issue.first.id)
       end
+
+      describe 'filter by status' do
+        subject { get :index, params: { status: params_status } }
+
+        STATUSES = {
+          pending: 1,
+          in_progress: 2,
+          resolved: 3
+        }
+
+        before(:all) { STATUSES.each { |status, count| count.times { create(:issue, status: status) } } }
+
+        Issue.statuses.keys.each do |status|
+          context "when filter by #{status}" do
+            let(:params_status) { status }
+
+            it 'returns issues in specified status only' do
+              subject
+              expect(json_body).to have(STATUSES[status.to_sym]).items
+            end
+          end
+        end
+      end
     end
   end
 
